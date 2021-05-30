@@ -1,0 +1,51 @@
+#@configure_input@
+
+SHELL = @SHELL@
+prefix = @prefix@
+exec_prefix = @exec_prefix@
+bindir = @bindir@
+libexecdir = @libexecdir@
+datarootdir = @datarootdir@
+datadir = @datadir@
+sysconfdir = @sysconfdir@
+sharedstatedir = @sharedstatedir@
+localstatedir = @localstatedir@
+libdir = @libdir@
+infodir = @infodir@
+mandir = @mandir@
+includedir = @includedir@
+oldincludedir = /usr/include
+DESTDIR =
+top_builddir = .
+installdir = @prefix@
+
+CXX = @CXX@
+FLAGS = -I. @CXXFLAGS@
+
+CFILES = player.c reader.c mixer.c audio.c
+
+ifeq (@with_soxlibs@,yes)
+CFILES += file_info.c
+endif
+
+LIBS = @LIBS@
+
+ifeq (@with_soxlibs@,yes)
+LIBS += @soxlibs@
+endif
+
+all:
+	rm -f flmusic
+	$(CXX) $(FLAGS) -o flmusic $(CFILES) $(LIBS)
+
+clean:
+	rm -f flmusic
+
+distclean: clean
+	rm -f config.h config.log config.status Makefile
+ 
+install: all
+	cp flmusic $(installdir)/bin
+
+install-stripped: install
+	strip $(installdir)/bin/flmusic
